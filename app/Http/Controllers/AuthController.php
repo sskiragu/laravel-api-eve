@@ -27,7 +27,11 @@ class AuthController extends BaseController
         $credentials = $request->only(['username', 'password']);
         
         if (Auth::attempt($credentials)) {
-            return response()->json(['message' => "Login successful."], 200);
+            $user = Auth::user();
+
+            $token = $user->createToken('auth-token')->plainTextToken;
+
+            return response()->json(['auth-token' => $token], 200);
         }else{
             return response()->json(['message' => "Invalid credentials."], 401);
         }
