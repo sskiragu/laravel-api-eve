@@ -31,9 +31,16 @@ class AuthController extends BaseController
 
             $token = $user->createToken('auth-token')->plainTextToken;
 
-            return response()->json(['auth-token' => $token], 200);
+            return response()->json(['auth-token' => $token, 'is_admin' => $user->is_admin('admin')], 200);
         }else{
             return response()->json(['message' => "Invalid credentials."], 401);
         }
+    }
+
+    public function logout(){
+        $user = Auth::user();
+
+        $user->tokens('auth-token')->delete();
+        return response()->json(['message' => 'Logout successful.'], 200);
     }
 }
